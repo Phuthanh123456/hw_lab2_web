@@ -55,12 +55,13 @@ Do folder trống nên chưa có framework cần giữ. Đề cần một demo c
 - Commit thực hiện: feat(timer): schedule countdown with animation frames
 
 ### M3 — Mô hình Inventory Lock FSM thuần
-- Mục tiêu: Định nghĩa state và transition tường minh cho giữ hàng, hết hạn, giải phóng lock và checkout.
-- File dự kiến: src/inventory/inventory-machine.ts, src/inventory/__tests__/inventory-machine.test.ts.
-- Phụ thuộc: M1.
-- Hoàn thành khi: Mỗi transition hợp lệ được nêu rõ; transition không hợp lệ bị từ chối; trạng thái terminal và điều kiện hết hạn không thể bị lách qua thao tác UI.
-- Kiểm tra: Unit tests cho mọi transition hợp lệ/không hợp lệ, đúng hạn và quá hạn.
-- Commit dự kiến: feat: model inventory hold state machine
+- Mục tiêu: Định nghĩa model reservation và transition thuần, tường minh giữa active, checked-out và expired.
+- File dự kiến/đã tạo: src/inventory/reservation.ts, src/inventory/__tests__/reservation.test.ts.
+- Phụ thuộc: M0. Model reservation tự chứa để có thể kiểm thử độc lập; đồng bộ với contract inventory rộng hơn tại M1 khi milestone đó được thực hiện.
+- Hoàn thành khi: Reservation có ID ổn định, productId, quantity, expiresAt; active chỉ checkout trước expiresAt và chỉ expire tại/sau expiresAt; transition sai trả lý do từ chối và không đổi state; thời gian nowMs hữu hạn được truyền vào.
+- Kiểm tra/kết quả thực tế: npm run typecheck đạt; npm test -- --run đạt (4 test files, 24 tests), gồm tạo active, checkout trước hạn, expire đúng/quá hạn, từ chối checkout đúng hạn, expire sớm, transition từ terminal state, field/time không hợp lệ.
+- Trạng thái: Hoàn thành (2026-10-23).
+- Commit thực hiện: feat(inventory): model reservation lock states
 
 ### M4 — Reservation coordinator và tính nguyên tử trong mô phỏng
 - Mục tiêu: Điều phối yêu cầu giữ hàng cạnh tranh, không cho phép bán/giữ vượt tồn kho.
@@ -128,4 +129,4 @@ Do folder trống nên chưa có framework cần giữ. Đề cần một demo c
 
 ## Kế hoạch commit
 
-M0–M11 gồm 13 commit riêng theo thứ tự phụ thuộc, dùng Conventional Commits; M2 được tách thành hai commit (core và scheduler). M0 đã hoàn thành bằng chore(hw3): prepare flash-sale engine scaffold và M2.1 bằng feat(timer): add date-based countdown core. M1, M2.2 và M3–M11 còn chờ yêu cầu và kiểm tra từng milestone. Không gộp milestone. Hiện chưa cấu hình remote và chưa push.
+M0–M11 dự kiến gồm 13 commit riêng theo thứ tự phụ thuộc, dùng Conventional Commits; M2 được tách thành hai commit (core và scheduler). M0, M2.1, M2.2 và M3 đã hoàn thành bằng các commit ghi tại từng milestone. M1 và M4–M11 còn chờ yêu cầu và kiểm tra từng milestone. Không gộp milestone. Hiện chưa cấu hình remote và chưa push.
