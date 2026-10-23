@@ -49,8 +49,11 @@ Do folder trống nên chưa có framework cần giữ. Đề cần một demo c
 - Phụ thuộc: M2.1.
 - Hoàn thành khi: Có tối đa một frame đang chờ; stop/cancel idempotent và không phát callback tiếp; hết hạn phát 0 và kết thúc đúng một lần; không dùng setInterval hoặc tích lũy delta frame.
 - Kiểm tra: Inject fake clock/RAF; kiểm tra frame trễ, duration 0, frame kết thúc, hủy trước frame và không gọi callback sau hủy.
-- Trạng thái: Chưa thực hiện.
-- Commit dự kiến: feat(timer): schedule countdown with animation frames
+- Trạng thái: Hoàn thành (2026-10-23).
+- Kết quả thực tế: startCountdown chụp deadline một lần từ duration và clock; mỗi frame tính lại bằng deadline trừ Date.now/clock. Dùng RAF adapter có thể inject, giữ tối đa một frame chờ; stop idempotent hủy frame và callback đến muộn bị bỏ qua. Khi remaining về 0, phát tick 0 và onComplete đúng một lần.
+- Kết quả kiểm tra: npm run typecheck đạt; npm test -- --run đạt (3 test files, 15 tests), gồm frame trễ, zero duration, hoàn tất, hủy và callback sau hủy; npm run build đạt.
+- Commit thực hiện: feat(timer): schedule countdown with animation frames
+
 ### M3 — Mô hình Inventory Lock FSM thuần
 - Mục tiêu: Định nghĩa state và transition tường minh cho giữ hàng, hết hạn, giải phóng lock và checkout.
 - File dự kiến: src/inventory/inventory-machine.ts, src/inventory/__tests__/inventory-machine.test.ts.
