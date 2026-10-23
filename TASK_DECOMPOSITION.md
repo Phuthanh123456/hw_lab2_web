@@ -2,7 +2,7 @@
 
 ## Hiện trạng và nguyên tắc
 
-Workspace ban đầu không có project files hoặc quy tắc dự án. `project_rules.md` được tạo để giữ phạm vi từng task nhỏ và yêu cầu kiểm tra trước commit. Tasks 0.1–0.2 và 1.1–1.2 đã hoàn thành nền tảng, dữ liệu mẫu, contract và bảng HTML; M2 đã triển khai sorting, filtering và pagination; M3 đã triển khai chọn dòng và điều hướng bàn phím. Rà soát responsive/screen reader và Lighthouse của M4–M5 vẫn chờ xác minh bằng browser/công cụ phù hợp.
+Workspace ban đầu không có project files hoặc quy tắc dự án. `project_rules.md` giữ phạm vi từng task nhỏ và yêu cầu kiểm tra trước commit. M2/M3 đã có các commit milestone riêng. Production build được đo bằng Lighthouse 13.5.0 trên Chrome 155 headless desktop: Accessibility 100/100 và Best Practices 100/100; browser flow, Chrome Accessibility tree và viewport 320px đã được kiểm tra. Kiểm tra zoom 200–400% và screen reader thực tế vẫn cần người dùng xác minh.
 
 Các đường dẫn trong mục “File dự kiến” cho task sau là mục tiêu triển khai. Project hiện dùng React + TypeScript với Vite; contract TypeScript đã được khai báo ở Task 1.1.
 
@@ -82,13 +82,12 @@ Các đường dẫn trong mục “File dự kiến” cho task sau là mục t
 
 **Task 3.1 — Chọn hàng và phản hồi selection**
 
-- **Trạng thái:** Phần triển khai và kiểm tra logic hoàn tất (2026-10-23); kiểm tra DOM/bàn phím trên browser còn chờ.
+- **Trạng thái:** Hoàn thành triển khai và browser flow (2026-10-23); callback runtime trong demo chưa kiểm tra vì App không truyền `onRowSelect`.
 - **Mục tiêu:** Enter kích hoạt chọn dòng và callback; Space/click bật hoặc tắt dòng; lựa chọn giữ theo định danh ổn định qua sort, filter và pagination.
 - **File dự kiến:** `src/components/data-grid/DataGrid.tsx`, `src/components/data-grid/data-grid-contract.ts`, `src/components/data-grid/data-grid-selection.ts`, `src/components/data-grid/DataGrid.css`, `src/App.tsx`.
 - **Phụ thuộc:** Task 1.2.
 - **Hoàn thành khi:** Enter gọi callback với đúng item; Space ngăn cuộn trang và toggle lựa chọn; click dùng cùng toggle; callback không bị gọi đôi; `aria-selected` và dấu trực quan phản ánh trạng thái; ID ổn định không phụ thuộc index, demo dùng `employeeId`; giữ native table/button.
-- **Cách kiểm tra và kết quả:** Harness Node cho helper đạt các chuyển trạng thái Enter, Space bật/tắt, click bật/tắt và Enter lặp lại; callback gate bật một lần khi kích hoạt/chọn dòng mới và không bật khi bỏ chọn. Harness với dữ liệu demo xác nhận ID không đổi sau sort → filter → paginate và khi dòng tạm thời bị lọc khỏi kết quả. Rà TypeScript AST xác nhận handler Enter/Space gọi `preventDefault`, cell xử lý keydown, row xử lý click, và component chỉ có một call site cho callback. Rà source xác nhận `aria-selected`, key theo row ID và demo truyền `employeeId`. `npm run typecheck` và `npm run build` đạt. Chưa có browser để kiểm tra sự kiện DOM, focus và scroll trực tiếp; phần kiểm tra tương tác đó vẫn cần hoàn tất.
-
+- **Cách kiểm tra và kết quả:** Node harness kiểm tra Enter activation, Space bật/tắt, click bật/tắt và hành vi callback gate. Chrome headless browser chạy flow sort Department bằng Enter → filter `Active` (8/12) → Next bằng Enter (trang 2, 3 dòng) → ArrowRight/Down → Enter chọn `EMP-1314` → Space bỏ chọn và chọn lại; scrollY giữ nguyên 0. Click chuột bỏ/chọn dòng đạt. Sau khi lọc không có kết quả, thông báo rỗng và summary `Không có trang · 0 dòng` không tạo trang 0; lọc `Marketing` lại khôi phục chọn đúng `EMP-1314`. Kiểm tra identity qua sort/filter/page và hàng bị ẩn được lưu ở `artifacts/browser-rerun/browser-check-results.json`; ảnh từng trạng thái ở cùng thư mục. Callback thực tế không được truyền trong demo, nên callback API chỉ được rà một call site và kiểm tra transition helper, chưa được xác nhận bằng browser fixture.
 **Task 3.2 — Điều hướng ô bằng phím mũi tên**
 
 - **Trạng thái:** Hoàn thành (2026-10-23).
@@ -96,7 +95,7 @@ Các đường dẫn trong mục “File dự kiến” cho task sau là mục t
 - **File dự kiến:** `src/components/data-grid/DataGrid.tsx`, `src/components/data-grid/DataGrid.css`, `src/components/data-grid/data-grid-keyboard.ts`.
 - **Phụ thuộc:** Task 2.3. Row selection và Enter/Space vẫn thuộc Task 3.1, không nằm trong bước này.
 - **Hoàn thành khi:** Tại mỗi thời điểm chỉ một gridcell đang hiển thị có `tabIndex=0`; bốn phím mũi tên di chuyển trong ranh giới các hàng/cột của trang hiện tại; khi filter/sort/page thay đổi, tọa độ được clamp và focus được khôi phục nếu trước đó ở trong ô grid; input tìm kiếm không nhận handler mũi tên của grid; focus hiển thị rõ.
-- **Cách kiểm tra và kết quả:** Harness Node kiểm tra bốn hướng, chặn ở biên, clamp tọa độ vào số hàng/cột mới và trường hợp grid rỗng đều đạt; `npm run typecheck` và `npm run build` thành công. Rà mã xác nhận handler chỉ gắn trên gridcell (input tìm kiếm không bị chặn mũi tên), focus khôi phục sau thay đổi page rows nếu trước đó nằm trong ô, và chỉ render/điều hướng ô của trang hiện tại. Kiểm tra browser/accessibility tree và screen reader để ở Task 4.2. Enter/Space được xử lý trong Task 3.1; kiểm tra DOM/bàn phím trên browser vẫn chờ ở Task 4.2.
+- **Cách kiểm tra và kết quả:** Harness helper kiểm tra bốn hướng/clamp; Chrome browser test trên trang 2 cũng kiểm tra Arrow Up/Down/Left/Right, ranh giới trên-trái/dưới-phải và focus còn trong các ô hiện hành. Kết quả: `artifacts/browser-rerun/keyboard-boundaries.json`; `npm run typecheck` và `npm run build` đạt. Focus screenshot: `artifacts/browser-rerun/05-grid-arrow-focus.png`.
 
 ### M4 — Hoàn thiện giao diện và WCAG 2.2 AA
 
@@ -107,8 +106,8 @@ Các đường dẫn trong mục “File dự kiến” cho task sau là mục t
 - **Phụ thuộc:** Task 2.3 và 3.2.
 - **Hoàn thành khi:** Chữ thường đạt tương phản tối thiểu 4.5:1; focus nhìn thấy rõ; hover/selected/sort/disabled không chỉ dựa vào màu; bảng dùng được ở viewport hẹp và zoom cao.
 - **Cách kiểm tra:** Đo các cặp màu bằng công cụ contrast; kiểm tra focus hiển thị, zoom 200–400% và viewport hẹp; rà WCAG 2.2 AA bằng công cụ tự động và thủ công.
-- **Ghi nhận rà soát liên quan (2026-10-23):** Script contrast kiểm tra 12 cặp chữ/nền, thấp nhất 7.58:1; focus indicator đạt tối thiểu 6.10:1 trên 7 nền trạng thái. Rà CSS xác nhận hover/selected có màu nền riêng, focus có viền 3px; đã sửa cascade để sọc zebra không che nền selected. Bảng giữ đủ cột bằng `overflow-x: auto`, `min-width: 58rem` và scroll region có tên truy cập. Chưa kiểm tra hiển thị thực tế ở viewport hẹp/zoom do không có browser trong môi trường.
-- **Trạng thái hiện tại:** Chưa hoàn tất; cần xác minh viewport hẹp/zoom và focus trực quan trong browser trước khi đóng Task 4.1.
+- **Ghi nhận rà soát liên quan (2026-10-23):** Script contrast kiểm tra 21 cặp chữ/nền, thấp nhất 7.58:1; hai màu focus indicator đạt tối thiểu 5.19:1 trên 8 nền trạng thái. Lighthouse 13.5.0 trên production build đạt Accessibility 100/100 và Best Practices 100/100 sau khi sửa 404 favicon. Chrome headless ở viewport 320×780 xác nhận scroll region rộng 286px chứa bảng rộng 928px, đủ 7 header; document không tràn ngang. Ảnh focus/selected và hai mép bảng hẹp ở `artifacts/browser-rerun/`. Zoom 200–400% chưa kiểm tra.
+- **Trạng thái hiện tại:** Đã xác minh viewport 320×780 và focus cơ bản; còn cần kiểm tra zoom 200–400% trên trình duyệt thực.
 
 **Task 4.2 — Rà semantics và hỗ trợ screen reader**
 
@@ -117,18 +116,19 @@ Các đường dẫn trong mục “File dự kiến” cho task sau là mục t
 - **Phụ thuộc:** Task 3.2 và 4.1.
 - **Hoàn thành khi:** Tên grid, header, hàng/cột, sort, filter, pagination, focus và selection được công bố; không có thông báo lặp hoặc role xung đột giữa table semantics và grid interaction.
 - **Cách kiểm tra:** Rà accessibility tree và kiểm tra keyboard + screen reader thủ công trên cấu hình hỗ trợ đã chọn; xử lý mọi lỗi nghiêm trọng/cao trước khi qua milestone.
-- **Ghi nhận rà soát source (2026-10-23):** Giữ `<table>`, `<thead>`, `<tbody>`, `<th scope="col">`, `<td>` và button native; table có tên/role grid, header có `aria-sort`, sort/pagination buttons có tên, search có label, scroll region có tên, row công bố `aria-selected`, và hướng dẫn bàn phím được liên kết với grid. Chưa có browser accessibility tree hoặc screen reader để xác minh cách đọc thực tế; Lighthouse/axe/pa11y cũng không có sẵn.
-- **Trạng thái hiện tại:** Chưa hoàn tất; cần kiểm tra bằng accessibility tree và screen reader trên browser trước khi đóng Task 4.2.
+- **Ghi nhận kiểm tra (2026-10-23):** Chrome Accessibility tree công bố grid có tên `Danh sách nhân sự`, tên scroll region, `columnheader`, `gridcell`, buttons/searchbox/status và row `selected=true`; lưu tại `artifacts/browser-rerun/chrome-accessibility-tree.json`. Lighthouse Accessibility đạt 100/100. Chưa chạy screen reader thực tế (NVDA/JAWS/VoiceOver), nên cách đọc và thông báo trên thiết bị hỗ trợ chưa được xác minh.
+- **Trạng thái hiện tại:** Accessibility tree và keyboard đã kiểm tra trong Chrome; screen reader thực tế vẫn cần kiểm tra thủ công.
 
 ### M5 — Tích hợp và xác minh chất lượng cuối
 
 **Task 5.1 — Tích hợp DataGrid vào trang mẫu**
+- **Trạng thái:** Flow DataGrid trong browser đã kiểm tra (2026-10-23); `onRowSelect` callback chưa được App demo truyền vào.
 
 - **Mục tiêu:** Dùng component với dữ liệu mẫu và xác nhận luồng thao tác end-to-end.
 - **File dự kiến:** `src/App.tsx`, `src/data/sample-data.ts`.
 - **Phụ thuộc:** Task 4.2.
 - **Hoàn thành khi:** Trang mẫu thể hiện sorting, filtering, pagination, keyboard navigation và row selection; không phát sinh lỗi console hoặc type/build.
-- **Cách kiểm tra:** Chạy ứng dụng, thao tác đầy đủ bằng bàn phím và chuột, kiểm tra console, chạy typecheck/build.
+- **Cách kiểm tra và kết quả:** Production preview trên Chrome headless đã kiểm tra sort/filter/page, mũi tên, Enter/Space, click, trạng thái rỗng, phục hồi selection sau khi dòng bị lọc ẩn/hiện; console/page errors rỗng. Browser evidence ở `artifacts/browser-rerun/`; axe tree và kết quả chi tiết nằm trong JSON cùng thư mục. `npm run typecheck` và `npm run build` đạt. Callback API chưa được kiểm tra qua prop runtime vì demo hiện không truyền callback.
 
 **Task 5.2 — Lighthouse và tiêu chí bàn giao**
 
@@ -137,7 +137,12 @@ Các đường dẫn trong mục “File dự kiến” cho task sau là mục t
 - **Phụ thuộc:** Task 5.1.
 - **Hoàn thành khi:** Lighthouse đạt **100/100 Accessibility** và **100/100 Best Practices** trên production build; các điều kiện tương phản, semantics, keyboard và screen reader đã có kết quả kiểm tra; không còn lỗi được biết ảnh hưởng tiêu chí.
 - **Cách kiểm tra:** Build production và chạy Lighthouse trên trang đã build; lưu lại URL/môi trường, phiên bản Lighthouse, hai điểm số và xử lý lại các audit fail cho đến khi đạt đúng 100/100; hoàn tất rà soát thủ công accessibility.
-- **Trạng thái kiểm tra hiện tại:** Lighthouse chưa được chạy vì Lighthouse CLI và browser không có trong PATH/project dependencies; không suy ra điểm từ build hoặc contrast check.
+- **Kết quả đo (2026-10-23):** Lighthouse 13.5.0, URL `http://127.0.0.1:4173/`, production `vite preview`, Google Chrome 155.0.8059.85 headless, preset desktop, viewport 1350×940, fetchTime `2026-10-23T03:04:43.532Z`: Accessibility **100/100**, Best Practices **100/100**, không có audit fail. Lượt đầu đạt Accessibility 100/100 và Best Practices 96/100 do `errors-in-console` ghi 404 `/favicon.ico`; đã thêm `/favicon.svg` và rerun đạt 100/100. JSON reports: `artifacts/lighthouse/datagrid-desktop-2026-10-23.report.json` và `datagrid-desktop-rerun-2026-10-23.report.json`; ảnh report: `artifacts/browser-rerun/11-lighthouse-report.png`.
+
+## Đối chiếu Git history (2026-10-23)
+
+- `85aa5e8` contract TypeScript; `5ee06c4` bảng tĩnh; `5caee72` sorting; `4fae54b` filtering; `8a44ea0` pagination; `8b5e5c9` keyboard arrows; `424586f` row selection. `156ae5f` thêm bộ khung React + TypeScript + Vite trong commit riêng sau các milestone HW1. `git show --stat` xác nhận các commit có diff theo phạm vi; không có thao tác viết lại lịch sử.
+- Các file bootstrap như `package.json`, `index.html`, `src/main.tsx`, cấu hình TypeScript/Vite và `project_rules.md` đã được track ở commit `156ae5f`. Branch hiện tại là `master`; `origin` trỏ đến `https://github.com/Phuthanh123456/hw_lab2_web.git`.
 
 ## Cách làm và cổng chuyển bước
 

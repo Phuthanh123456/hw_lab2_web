@@ -1,0 +1,200 @@
+[
+  {
+    "role": "region",
+    "name": "Nhân sự",
+    "properties": {
+      "labelledby": "nodeList"
+    }
+  },
+  {
+    "role": "searchbox",
+    "name": "Tìm kiếm trong bảng",
+    "properties": {
+      "labelledby": "nodeList"
+    }
+  },
+  {
+    "role": "status",
+    "name": "",
+    "properties": {
+      "live": "polite"
+    }
+  },
+  {
+    "role": "region",
+    "name": "Vùng bảng cuộn ngang: Danh sách nhân sự",
+    "properties": {}
+  },
+  {
+    "role": "grid",
+    "name": "Danh sách nhân sự",
+    "properties": {
+      "describedby": "_r_1_"
+    }
+  },
+  {
+    "role": "status",
+    "name": "",
+    "properties": {
+      "live": "polite"
+    }
+  },
+  {
+    "role": "button",
+    "name": "Trang trước",
+    "properties": {
+      "disabled": true
+    }
+  },
+  {
+    "role": "button",
+    "name": "Trang tiếp theo",
+    "properties": {
+      "disabled": true
+    }
+  },
+  {
+    "role": "row",
+    "name": "Employee ID, chưa sắp xếp; nhấn để sắp xếp tăng dần Name, chưa sắp xếp; nhấn để sắp xếp tăng dần Department, đang sắp xếp tăng dần; nhấn để sắp xếp giảm dần Office Employment type Status Years at company, chưa sắp xếp; nhấn để sắp xếp tăng dần",
+    "properties": {}
+  },
+  {
+    "role": "row",
+    "name": "EMP-1259 Mai Duc Khang Marketing Ho Chi Minh City Full-time Probation 0.2",
+    "properties": {
+      "selected": true
+    }
+  },
+  {
+    "role": "row",
+    "name": "EMP-1314 Vu Hoang Nam Marketing Da Nang Full-time Active 7.3",
+    "properties": {
+      "selected": false
+    }
+  },
+  {
+    "role": "columnheader",
+    "name": "Employee ID, chưa sắp xếp; nhấn để sắp xếp tăng dần",
+    "properties": {}
+  },
+  {
+    "role": "columnheader",
+    "name": "Name, chưa sắp xếp; nhấn để sắp xếp tăng dần",
+    "properties": {}
+  },
+  {
+    "role": "columnheader",
+    "name": "Department, đang sắp xếp tăng dần; nhấn để sắp xếp giảm dần",
+    "properties": {}
+  },
+  {
+    "role": "columnheader",
+    "name": "Office",
+    "properties": {}
+  },
+  {
+    "role": "columnheader",
+    "name": "Employment type",
+    "properties": {}
+  },
+  {
+    "role": "columnheader",
+    "name": "Status",
+    "properties": {}
+  },
+  {
+    "role": "columnheader",
+    "name": "Years at company, chưa sắp xếp; nhấn để sắp xếp tăng dần",
+    "properties": {}
+  },
+  {
+    "role": "gridcell",
+    "name": "EMP-1259",
+    "properties": {}
+  },
+  {
+    "role": "gridcell",
+    "name": "Mai Duc Khang",
+    "properties": {}
+  },
+  {
+    "role": "gridcell",
+    "name": "Marketing",
+    "properties": {}
+  },
+  {
+    "role": "gridcell",
+    "name": "Ho Chi Minh City",
+    "properties": {}
+  },
+  {
+    "role": "gridcell",
+    "name": "Full-time",
+    "properties": {}
+  },
+  {
+    "role": "gridcell",
+    "name": "Probation",
+    "properties": {}
+  },
+  {
+    "role": "gridcell",
+    "name": "0.2",
+    "properties": {}
+  },
+  {
+    "role": "gridcell",
+    "name": "EMP-1314",
+    "properties": {}
+  },
+  {
+    "role": "gridcell",
+    "name": "Vu Hoang Nam",
+    "properties": {}
+  },
+  {
+    "role": "gridcell",
+    "name": "Marketing",
+    "properties": {}
+  },
+  {
+    "role": "gridcell",
+    "name": "Da Nang",
+    "properties": {}
+  },
+  {
+    "role": "gridcell",
+    "name": "Full-time",
+    "properties": {}
+  },
+  {
+    "role": "gridcell",
+    "name": "Active",
+    "properties": {}
+  },
+  {
+    "role": "gridcell",
+    "name": "7.3",
+    "properties": {}
+  },
+  {
+    "role": "button",
+    "name": "Employee ID, chưa sắp xếp; nhấn để sắp xếp tăng dần",
+    "properties": {}
+  },
+  {
+    "role": "button",
+    "name": "Name, chưa sắp xếp; nhấn để sắp xếp tăng dần",
+    "properties": {}
+  },
+  {
+    "role": "button",
+    "name": "Department, đang sắp xếp tăng dần; nhấn để sắp xếp giảm dần",
+    "properties": {}
+  },
+  {
+    "role": "button",
+    "name": "Years at company, chưa sắp xếp; nhấn để sắp xếp tăng dần",
+    "properties": {}
+  }
+]

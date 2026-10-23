@@ -1,0 +1,71 @@
+{
+  "moves": [
+    {
+      "key": "ArrowUp",
+      "row": 0,
+      "column": 0
+    },
+    {
+      "key": "ArrowLeft",
+      "row": 0,
+      "column": 0
+    },
+    {
+      "key": "ArrowRight",
+      "row": 0,
+      "column": 1
+    },
+    {
+      "key": "ArrowDown",
+      "row": 1,
+      "column": 1
+    },
+    {
+      "key": "ArrowDown",
+      "row": 2,
+      "column": 1
+    },
+    {
+      "key": "ArrowDown",
+      "row": 2,
+      "column": 1
+    },
+    {
+      "key": "ArrowRight",
+      "row": 2,
+      "column": 2
+    },
+    {
+      "key": "ArrowRight",
+      "row": 2,
+      "column": 3
+    },
+    {
+      "key": "ArrowRight",
+      "row": 2,
+      "column": 4
+    },
+    {
+      "key": "ArrowRight",
+      "row": 2,
+      "column": 5
+    },
+    {
+      "key": "ArrowRight",
+      "row": 2,
+      "column": 6
+    },
+    {
+      "key": "ArrowRight",
+      "row": 2,
+      "column": 6
+    },
+    {
+      "key": "ArrowLeft",
+      "row": 2,
+      "column": 5
+    }
+  ],
+  "topLeftClamped": true,
+  "bottomRightClamped": true
+}

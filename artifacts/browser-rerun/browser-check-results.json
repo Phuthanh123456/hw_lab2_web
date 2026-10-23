@@ -1,0 +1,44 @@
+{
+  "url": "http://127.0.0.1:4173/",
+  "browser": "Google Chrome 155.0.8059.85 (headless; Playwright Core driving installed Chrome)",
+  "viewport": {
+    "width": 1350,
+    "height": 940
+  },
+  "checks": {
+    "initialRows": 5,
+    "departmentSort": "ascending",
+    "filterResults": "8 / 12",
+    "pageTwoRows": 3,
+    "arrowFocus": {
+      "row": "1",
+      "column": "1",
+      "text": "Vu Hoang Nam"
+    },
+    "enterSelectedRowId": "EMP-1314",
+    "spaceDeselectedAndReselected": true,
+    "pageScrollBeforeAndAfterSpace": [
+      0,
+      0
+    ],
+    "emptyState": "Không có trang · 0 dòng",
+    "selectionRestoredAfterFilter": "EMP-1314",
+    "mouseSelectAndDeselect": true,
+    "axRoles": [
+      "region",
+      "searchbox",
+      "status",
+      "grid",
+      "button",
+      "row",
+      "columnheader",
+      "gridcell"
+    ],
+    "namedGrid": "Danh sách nhân sự",
+    "namedScrollRegion": "Nhân sự",
+    "selectedRowExposed": true,
+    "lighthouseScreenshot": true,
+    "consoleErrors": [],
+    "pageErrors": []
+  }
+}

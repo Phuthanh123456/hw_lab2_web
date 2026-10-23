@@ -1,0 +1,7 @@
+424586f (HEAD -> master) feat(grid): add accessible row selection
+8b5e5c9 feat(grid): add arrow-key cell navigation
+8a44ea0 feat(grid): add pagination controls
+4fae54b feat(grid): add case-insensitive filtering
+5caee72 feat(grid): add sortable columns
+5ee06c4 feat(grid): render static accessible data grid
+85aa5e8 feat(types): add generic data-grid contract

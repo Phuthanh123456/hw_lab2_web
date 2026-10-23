@@ -1,0 +1,19 @@
+{
+  "viewport": {
+    "width": 320,
+    "height": 780
+  },
+  "table": {
+    "clientWidth": 286,
+    "scrollWidth": 928,
+    "scrollLeft": 0,
+    "regionName": "Vùng bảng cuộn ngang: Danh sách nhân sự",
+    "columnCount": 7,
+    "documentWidth": 320,
+    "documentScrollWidth": 320,
+    "tableWidth": 928
+  },
+  "scrollLeftAtRightEdge": 642,
+  "allSevenHeadersRetained": true,
+  "documentHasNoHorizontalOverflow": true
+}
