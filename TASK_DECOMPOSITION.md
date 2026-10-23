@@ -62,11 +62,12 @@ Các đường dẫn trong mục “File dự kiến” cho task sau là mục t
 
 **Task 2.2 — Lọc dữ liệu**
 
-- **Mục tiêu:** Cho phép lọc dữ liệu bằng control có nhãn và thông báo kết quả.
-- **File dự kiến:** `src/components/data-grid/DataGrid.tsx`, `src/components/data-grid/data-grid-utils.ts`.
-- **Phụ thuộc:** Task 1.2.
-- **Hoàn thành khi:** Bộ lọc hoạt động trên dữ liệu hiển thị; input có label rõ; trạng thái rỗng và số kết quả được thông báo; lọc kết hợp đúng với sort và pagination.
-- **Cách kiểm tra:** Thử giá trị khớp/không khớp, xóa bộ lọc và lọc khi đang ở trang sau; kiểm tra đọc label/trạng thái với screen reader; typecheck/build.
+- **Trạng thái:** Hoàn thành (2026-10-23).
+- **Mục tiêu:** Cho phép tìm kiếm không phân biệt hoa/thường trên các giá trị đang hiển thị, với control có label và thông báo kết quả.
+- **File dự kiến:** `src/components/data-grid/DataGrid.tsx`, `src/components/data-grid/DataGrid.css`, `src/components/data-grid/data-grid-utils.ts`.
+- **Phụ thuộc:** Task 1.2 và Task 2.1.
+- **Hoàn thành khi:** Ô tìm kiếm có label thật; kết quả khớp theo giá trị hiển thị ở mọi cột; số kết quả cập nhật; không có kết quả thì có thông báo trong thân bảng; xóa từ khóa khôi phục mọi hàng; lọc được áp dụng trước sorting và không mutate dữ liệu gốc.
+- **Cách kiểm tra và kết quả:** Kiểm tra helper với trường hợp tìm thấy không phân biệt hoa/thường, không tìm thấy, từ khóa rỗng và lọc kết hợp thứ tự sort; xác nhận dữ liệu đầu vào giữ nguyên; `npm run typecheck` và `npm run build` đều thành công. Kiểm tra label/thông báo trong accessibility tree bằng screen reader còn để Task 4.2. Pagination chưa được áp dụng ở task này.
 
 **Task 2.3 — Pagination**
 

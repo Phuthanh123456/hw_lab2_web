@@ -32,6 +32,28 @@ export function sortRows<T>(
   })
 }
 
+export function filterRows<T>(
+  data: readonly T[],
+  accessorKeys: readonly (keyof T)[],
+  query: string,
+): T[] {
+  const normalizedQuery = query.trim().toLocaleLowerCase()
+
+  if (normalizedQuery === '') {
+    return [...data]
+  }
+
+  return data.filter((row) =>
+    accessorKeys.some((accessorKey) => {
+      const value = row[accessorKey]
+      const displayValue =
+        value === null || value === undefined || value === '' ? '—' : String(value)
+
+      return displayValue.toLocaleLowerCase().includes(normalizedQuery)
+    }),
+  )
+}
+
 function compareValues(left: unknown, right: unknown): number {
   if (left === right) {
     return 0
