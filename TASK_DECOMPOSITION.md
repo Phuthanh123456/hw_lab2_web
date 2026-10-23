@@ -143,4 +143,4 @@ Do folder trống nên chưa có framework cần giữ. Đề cần một demo c
 
 ## Kế hoạch commit
 
-M0–M11 dự kiến gồm 12 commit: M2 tách thành core và scheduler; M4/M5 dùng chung một commit theo phạm vi triển khai; M10 và M11.1 đã có commit riêng. Hiện có 10 commit Conventional Commits trên branch này: 9 commit milestone HW3 cùng commit `10fc3a2` ghi nhận project rules. Đã vượt yêu cầu tối thiểu 8 commit riêng. M1, M7, M9 và phần bàn giao cuối của M11 vẫn còn chờ yêu cầu/kiểm tra. Hiện chưa cấu hình remote và chưa push.
+M0–M11 dự kiến gồm 12 commit: M2 tách thành core và scheduler; M4/M5 dùng chung một commit theo phạm vi triển khai; M10 và M11.1 có commit riêng. Các milestone HW3 được commit riêng theo Conventional Commits và đã vượt yêu cầu tối thiểu 8 commit; project rules và các lần cập nhật tài liệu cũng được commit riêng. M1, M7, M9 và phần bàn giao cuối của M11 vẫn còn chờ yêu cầu/kiểm tra. Hiện chưa cấu hình remote và chưa push.
