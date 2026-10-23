@@ -1,24 +1,15 @@
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
+# Dependencies and generated output for either homework
+**/node_modules/
+**/dist/
+**/dist-ssr/
+**/coverage/
+**/.vite/
+**/*.local
 
-node_modules
-dist
-dist-ssr
-*.local
-
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
+# Local environment and editor files
+**/.env
+**/.env.*
+!**/.env.example
+**/.vscode/
+**/.idea/
 .DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?

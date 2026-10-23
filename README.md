@@ -1,20 +1,6 @@
-# Homework 1 — Production Enterprise Data-Grid
+# Lab 2 Homework Repository
 
-Bộ khung React + TypeScript chạy với Vite. Trang hiện tại chỉ xác nhận project đã khởi tạo; DataGrid và các thao tác của bài tập chưa được triển khai.
+This repository contains the two Lab 2 assignments:
 
-## Chạy local
-
-```bash
-npm install
-npm run dev
-```
-
-## Kiểm tra và build
-
-```bash
-npm run typecheck
-npm run build
-npm run preview
-```
-
-`npm run build` thực hiện TypeScript project build rồi tạo production bundle trong `dist/`.
+- [Homework 1 — Production Enterprise Data-Grid](./hw1_lab2_web/README.md)
+- [Homework 2 — Concurrent FIFO Audio Visualizer Queue Engine](./hw2_lab2_web/README.md)
