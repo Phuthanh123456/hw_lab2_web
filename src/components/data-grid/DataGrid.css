@@ -19,6 +19,18 @@
   font-weight: 600;
 }
 
+.data-grid__screen-reader-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .data-grid__search-input {
   width: 100%;
   padding: 0.65rem 0.8rem;
@@ -155,6 +167,34 @@
 .data-grid__cell {
   color: #263530;
   font-size: 0.95rem;
+}
+
+.data-grid__row {
+  cursor: pointer;
+}
+
+.data-grid tbody tr.data-grid__row:hover {
+  background: #edf4f0;
+}
+
+.data-grid tbody tr.data-grid__row.data-grid__row--selected {
+  background: #e0ede5;
+}
+
+.data-grid tbody tr.data-grid__row.data-grid__row--selected:hover {
+  background: #d5e6dc;
+}
+
+.data-grid__row--selected .data-grid__cell:first-child::before {
+  content: '';
+  display: inline-block;
+  width: 0.45em;
+  height: 0.7em;
+  margin: 0 0.65rem 0 0.1rem;
+  border: solid #145c47;
+  border-width: 0 0.14em 0.14em 0;
+  transform: rotate(45deg);
+  vertical-align: 0.1em;
 }
 
 .data-grid__cell:focus-visible {

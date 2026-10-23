@@ -6,6 +6,7 @@ import {
   type GridArrowKey,
   type GridCellPosition,
 } from './data-grid-keyboard'
+import { getRowSelectionTransition, type RowSelectionAction } from './data-grid-selection'
 import {
   filterRows,
   getNextSortState,
@@ -25,13 +26,23 @@ function formatCellValue(value: unknown): string {
   return String(value)
 }
 
-export function DataGrid<T>({ data, columns, ariaLabel }: DataGridProps<T>) {
+export function DataGrid<T>({
+  data,
+  columns,
+  onRowSelect,
+  getRowId,
+  ariaLabel,
+}: DataGridProps<T>) {
   const searchInputId = useId()
+  const gridHelpId = useId()
   const [searchQuery, setSearchQuery] = useState('')
   const [sortState, setSortState] = useState<SortState<T> | null>(null)
+  const [selectedRowId, setSelectedRowId] = useState<string | null>(null)
   const [activeCell, setActiveCell] = useState<GridCellPosition>({ rowIndex: 0, columnIndex: 0 })
   const tableRef = useRef<HTMLTableElement>(null)
   const focusWithinGridRef = useRef(false)
+  const generatedRowIds = useRef(new WeakMap<object, string>())
+  const nextGeneratedRowId = useRef(0)
   const filteredData = useMemo(
     () => filterRows(data, columns.map((column) => column.accessorKey), searchQuery),
     [columns, data, searchQuery],
@@ -77,10 +88,56 @@ export function DataGrid<T>({ data, columns, ariaLabel }: DataGridProps<T>) {
     cell?.focus()
   }
 
+  function resolveRowId(item: T): string {
+    if (getRowId) {
+      const rowId = getRowId(item)
+      return `provided:${typeof rowId}:${String(rowId)}`
+    }
+
+    if (typeof item === 'object' && item !== null) {
+      const existingId = generatedRowIds.current.get(item)
+      if (existingId) {
+        return existingId
+      }
+
+      const rowId = `object:${nextGeneratedRowId.current}`
+      nextGeneratedRowId.current += 1
+      generatedRowIds.current.set(item, rowId)
+      return rowId
+    }
+
+    return `primitive:${typeof item}:${String(item)}`
+  }
+
+  function applyRowSelection(item: T, rowId: string, action: RowSelectionAction): void {
+    const transition = getRowSelectionTransition(selectedRowId, rowId, action)
+    setSelectedRowId(transition.selectedRowId)
+
+    if (transition.shouldCallOnRowSelect) {
+      onRowSelect?.(item)
+    }
+  }
+
   function handleGridCellKeyDown(
     event: React.KeyboardEvent<HTMLTableCellElement>,
     position: GridCellPosition,
+    item: T,
+    rowId: string,
   ): void {
+    if (event.key === 'Enter') {
+      event.preventDefault()
+      applyRowSelection(item, rowId, 'activate')
+      return
+    }
+
+    if (event.key === ' ' || event.key === 'Spacebar') {
+      event.preventDefault()
+      if (!event.repeat) {
+        applyRowSelection(item, rowId, 'toggle')
+      }
+      return
+    }
+
     if (!isGridArrowKey(event.key)) {
       return
     }
@@ -124,8 +181,23 @@ export function DataGrid<T>({ data, columns, ariaLabel }: DataGridProps<T>) {
         </p>
       </div>
 
-      <div className="data-grid__viewport">
-        <table ref={tableRef} className="data-grid" role="grid" aria-label={ariaLabel}>
+      <p id={gridHelpId} className="data-grid__screen-reader-only">
+        Dùng các phím mũi tên để di chuyển giữa các ô đang hiển thị. Nhấn Enter để chọn dòng đang
+        focus. Nhấn Space để bật hoặc tắt trạng thái chọn dòng.
+      </p>
+
+      <div
+        className="data-grid__viewport"
+        role="region"
+        aria-label={`Vùng bảng cuộn ngang: ${ariaLabel}`}
+      >
+        <table
+          ref={tableRef}
+          className="data-grid"
+          role="grid"
+          aria-label={ariaLabel}
+          aria-describedby={gridHelpId}
+        >
           <thead role="rowgroup">
             <tr role="row">
               {columns.map((column, columnIndex) => (
@@ -177,35 +249,51 @@ export function DataGrid<T>({ data, columns, ariaLabel }: DataGridProps<T>) {
                 </td>
               </tr>
             ) : (
-              page.rows.map((item, rowIndex) => (
-                <tr key={rowIndex} role="row">
-                  {columns.map((column, columnIndex) => (
-                    <td
-                      key={columnIndex}
-                      role="gridcell"
-                      className="data-grid__cell"
-                      data-grid-row-index={rowIndex}
-                      data-grid-column-index={columnIndex}
-                      tabIndex={
-                        rovingCell.rowIndex === rowIndex &&
-                        rovingCell.columnIndex === columnIndex
-                          ? 0
-                          : -1
-                      }
-                      onFocus={() => {
-                        focusWithinGridRef.current = true
-                        setActiveCell({ rowIndex, columnIndex })
-                      }}
-                      onBlur={handleGridCellBlur}
-                      onKeyDown={(event) =>
-                        handleGridCellKeyDown(event, { rowIndex, columnIndex })
-                      }
-                    >
-                      {formatCellValue(item[column.accessorKey])}
-                    </td>
-                  ))}
-                </tr>
-              ))
+              page.rows.map((item, rowIndex) => {
+                const rowId = resolveRowId(item)
+                const isSelected = selectedRowId === rowId
+
+                return (
+                  <tr
+                    key={rowId}
+                    role="row"
+                    className={`data-grid__row${isSelected ? ' data-grid__row--selected' : ''}`}
+                    aria-selected={isSelected}
+                    onClick={() => applyRowSelection(item, rowId, 'toggle')}
+                  >
+                    {columns.map((column, columnIndex) => (
+                      <td
+                        key={columnIndex}
+                        role="gridcell"
+                        className="data-grid__cell"
+                        data-grid-row-index={rowIndex}
+                        data-grid-column-index={columnIndex}
+                        tabIndex={
+                          rovingCell.rowIndex === rowIndex &&
+                          rovingCell.columnIndex === columnIndex
+                            ? 0
+                            : -1
+                        }
+                        onFocus={() => {
+                          focusWithinGridRef.current = true
+                          setActiveCell({ rowIndex, columnIndex })
+                        }}
+                        onBlur={handleGridCellBlur}
+                        onKeyDown={(event) =>
+                          handleGridCellKeyDown(
+                            event,
+                            { rowIndex, columnIndex },
+                            item,
+                            rowId,
+                          )
+                        }
+                      >
+                        {formatCellValue(item[column.accessorKey])}
+                      </td>
+                    ))}
+                  </tr>
+                )
+              })
             )}
           </tbody>
         </table>

@@ -36,6 +36,7 @@ function App() {
           <DataGrid
             data={employeeRecords}
             columns={employeeColumns}
+            getRowId={(item) => item.employeeId}
             ariaLabel="Danh sách nhân sự"
           />
         </section>

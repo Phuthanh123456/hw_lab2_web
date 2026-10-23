@@ -8,5 +8,7 @@ export interface DataGridProps<T> {
   data: T[]
   columns: ColumnDef<T>[]
   onRowSelect?: (item: T) => void
+  /** Return a unique, stable identifier for each row. */
+  getRowId?: (item: T) => string | number
   ariaLabel: string
 }
