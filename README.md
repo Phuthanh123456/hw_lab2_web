@@ -1,6 +1,6 @@
-# Lab 2 and Lab 3 Homework Repository
+# Lab 2 Homework Repository
 
-This repository contains the Lab 2 and Lab 3 homework projects:
+This repository contains the Lab 2 project:
 
 - [Homework 1 — Production Enterprise Data-Grid](./hw1_lab2_web/README.md)
 - [Homework 2 — Concurrent FIFO Audio Visualizer Queue Engine](./hw2_lab2_web/README.md)
