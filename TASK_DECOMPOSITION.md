@@ -53,11 +53,12 @@ Các đường dẫn trong mục “File dự kiến” cho task sau là mục t
 
 **Task 2.1 — Sắp xếp theo cột**
 
+- **Trạng thái:** Hoàn thành (2026-10-23).
 - **Mục tiêu:** Thêm sort tăng/giảm cho cột cho phép sort.
-- **File dự kiến:** `src/components/data-grid/DataGrid.tsx`, `src/components/data-grid/data-grid-utils.ts`.
+- **File dự kiến:** `src/components/data-grid/DataGrid.tsx`, `src/components/data-grid/DataGrid.css`, `src/components/data-grid/data-grid-utils.ts`, `src/App.tsx`.
 - **Phụ thuộc:** Task 1.2.
-- **Hoàn thành khi:** `sortable` điều khiển khả năng sort; nút tiêu đề thật đổi thứ tự; trạng thái được công bố qua `aria-sort`; dữ liệu gốc từ props không bị mutate.
-- **Cách kiểm tra:** Kiểm tra bằng bàn phím và chuột trên nhiều kiểu giá trị; xác nhận trạng thái sort được công bố trong accessibility tree; typecheck/build.
+- **Hoàn thành khi:** Chỉ cột `sortable: true` có nút sort; kích hoạt lặp lại theo chu kỳ mặc định → tăng dần → giảm dần → mặc định; chọn cột khác bắt đầu tăng dần; `aria-sort` chỉ có trên tiêu đề đang sort và chỉ báo hiển thị hướng sort; dữ liệu gốc từ props không bị mutate.
+- **Cách kiểm tra và kết quả:** Kiểm tra thuần `sortRows` với số, chuỗi, giá trị bằng nhau và bất biến dữ liệu đầu vào; kiểm tra `getNextSortState` cho chu kỳ ba trạng thái và chuyển cột; `npm run typecheck` và `npm run build` đều thành công. Xác nhận cấu trúc tiêu đề bằng nút thật, trạng thái `aria-sort` trên `th`, và các cột không bật `sortable` không có nút. Kiểm thử tương tác bằng browser/accessibility tree còn để Task 4.2.
 
 **Task 2.2 — Lọc dữ liệu**
 

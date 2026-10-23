@@ -4,13 +4,13 @@ import { employeeRecords, type EmployeeRecord } from './data/sample-data'
 import './App.css'
 
 const employeeColumns: ColumnDef<EmployeeRecord>[] = [
-  { header: 'Employee ID', accessorKey: 'employeeId' },
-  { header: 'Name', accessorKey: 'name' },
-  { header: 'Department', accessorKey: 'department' },
+  { header: 'Employee ID', accessorKey: 'employeeId', sortable: true },
+  { header: 'Name', accessorKey: 'name', sortable: true },
+  { header: 'Department', accessorKey: 'department', sortable: true },
   { header: 'Office', accessorKey: 'office' },
   { header: 'Employment type', accessorKey: 'employmentType' },
   { header: 'Status', accessorKey: 'status' },
-  { header: 'Years at company', accessorKey: 'yearsAtCompany' },
+  { header: 'Years at company', accessorKey: 'yearsAtCompany', sortable: true },
 ]
 
 function App() {

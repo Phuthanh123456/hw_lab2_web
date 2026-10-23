@@ -31,6 +31,39 @@
   white-space: nowrap;
 }
 
+.data-grid__sort-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin: -0.35rem -0.45rem;
+  padding: 0.35rem 0.45rem;
+  border: 0;
+  border-radius: 0.3rem;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-align: inherit;
+  cursor: pointer;
+}
+
+.data-grid__sort-button:hover {
+  background: #dce8e2;
+}
+
+.data-grid__sort-button:focus-visible {
+  outline: 3px solid #145c47;
+  outline-offset: 2px;
+}
+
+.data-grid__sort-indicator {
+  min-width: 1em;
+  color: #183b31;
+  font-size: 1rem;
+  line-height: 1;
+  text-align: center;
+}
+
 .data-grid__cell {
   color: #263530;
   font-size: 0.95rem;
