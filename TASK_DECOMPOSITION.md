@@ -99,12 +99,13 @@ Do folder trống nên chưa có framework cần giữ. Đề cần một demo c
 - Commit dự kiến: feat: add Vietnam mega-sale scenario
 
 ### M8 — UI demo nối với engine
-- Mục tiêu: Hiển thị countdown, sản phẩm, tồn kho, lock, checkout và trạng thái lỗi; gọi service thay vì tự xử lý quy tắc trong component.
-- File dự kiến: src/App.tsx, src/components/FlashSalePage.tsx, src/components/ProductCard.tsx, src/components/InventoryStatus.tsx, src/styles/*.
-- Phụ thuộc: M2, M4, M5, M6, M7.
-- Hoàn thành khi: Có thể quan sát sale trước/đang diễn ra, giữ hàng, hết hạn, checkout và cạnh tranh hàng cuối; trạng thái UI khớp engine.
-- Kiểm tra: Component tests và browser smoke test cho các trạng thái mở sale, giữ, hết hạn, checkout, lỗi; kiểm tra không có timer chạy nền sau unmount.
-- Commit dự kiến: feat: build flash-sale demo interface
+- Mục tiêu: Tạo demo 11.11 tối thiểu hiển thị countdown, một sản phẩm, stock, reservations, checkout và thông báo; component gọi timer/coordinator API hiện có.
+- File dự kiến/đã sửa: index.html, src/App.tsx, src/App.css, src/App.test.tsx; README.md cho cách/phạm vi demo.
+- Phụ thuộc: M2, M4, M5, M6. Dùng fixture đơn trong giao diện; dữ liệu demo tổng quát tại M7 vẫn là milestone riêng.
+- Hoàn thành khi: Hiển thị countdown mili giây, stock ban đầu/còn lại, trạng thái reservation, reserve/checkout/reset; thông báo reserve, hết hàng, hết hạn và checkout; timer countdown không gọi React state mỗi frame; button/nhãn/focus/live status rõ và bố cục co giãn màn hình hẹp.
+- Kiểm tra/kết quả thực tế: npm run typecheck đạt; npm test -- --run đạt (6 test files, 43 tests), gồm countdown từ absolute time, reserve → checkout, reserve → expire/hoàn kho, thông báo hết hàng/checkout bị từ chối, reset và cleanup RAF/timeout khi unmount; npm run build đạt. npm run dev -- --host 127.0.0.1 --port 4173 khởi động, GET http://127.0.0.1:4173/ trả HTTP 200. Các cặp chữ/màu chính được tính 8.27:1 trở lên.
+- Trạng thái: Hoàn thành (2026-10-23).
+- Commit thực hiện: feat(ui): add flash-sale inventory demo
 
 ### M9 — Khả năng dùng và quan sát trạng thái
 - Mục tiêu: Làm rõ trạng thái sale/lock/checkout, thông báo lỗi và thao tác bàn phím trong demo.
@@ -132,4 +133,4 @@ Do folder trống nên chưa có framework cần giữ. Đề cần một demo c
 
 ## Kế hoạch commit
 
-M0–M11 hiện dự kiến gồm 13 commit: M2 được tách thành hai commit (core và scheduler), còn M4/M5 được hoàn tất cùng một commit theo phạm vi được yêu cầu rõ ràng. M0, M2.1, M2.2, M3, M4, M5 và M6 đã hoàn thành bằng các commit ghi tại từng milestone. M1 và M7–M11 còn chờ yêu cầu và kiểm tra từng milestone. Các phần còn lại sẽ tiếp tục theo từng milestone. Hiện chưa cấu hình remote và chưa push.
+M0–M11 hiện dự kiến gồm 12 commit: M2 được tách thành hai commit (core và scheduler), còn M4/M5 được hoàn tất cùng một commit theo phạm vi được yêu cầu rõ ràng. M0, M2.1, M2.2, M3, M4, M5, M6 và M8 đã hoàn thành bằng các commit ghi tại từng milestone. M1, M7, M9, M10 và M11 còn chờ yêu cầu và kiểm tra từng milestone. Các phần còn lại sẽ tiếp tục theo từng milestone. Hiện chưa cấu hình remote và chưa push.

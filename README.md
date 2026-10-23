@@ -1,6 +1,6 @@
 # HW3 — High-Concurrency Flash-Sale E-Commerce Engine
 
-Minimal React + TypeScript + Vite browser demo. The project includes date-based countdown logic and an in-memory inventory reservation model/service; checkout and the complete sale workflow are not implemented yet.
+React + TypeScript + Vite demo for a simulated 11.11 flash sale. It includes an anti-drift countdown, in-memory reservations with expiry, checkout, and a small browser UI. It does not connect to a real payment provider or shared backend.
 
 ## Requirements
 
