@@ -2,7 +2,7 @@
 
 ## Hiện trạng và nguyên tắc
 
-Workspace ban đầu chưa có project files hoặc quy tắc dự án. `project_rules.md` được tạo để giữ phạm vi từng task nhỏ và yêu cầu kiểm tra trước commit. Task 0.1 đã tạo bộ khung tối thiểu; Task 1.1 đã chốt contract; các task còn lại vẫn chưa được thực hiện.
+Workspace ban đầu chưa có project files hoặc quy tắc dự án. `project_rules.md` được tạo để giữ phạm vi từng task nhỏ và yêu cầu kiểm tra trước commit. Task 0.1 đã tạo bộ khung; Tasks 0.2, 1.1 và 1.2 đã hoàn thành dữ liệu mẫu, contract và bảng tĩnh. Sorting, filtering, pagination, selection và điều hướng bàn phím vẫn đang chờ.
 
 Các đường dẫn trong mục “File dự kiến” cho task sau là mục tiêu triển khai. Project hiện dùng React + TypeScript với Vite; contract TypeScript đã được khai báo ở Task 1.1.
 
@@ -21,11 +21,12 @@ Các đường dẫn trong mục “File dự kiến” cho task sau là mục t
 
 **Task 0.2 — Tạo dữ liệu mẫu có kiểu rõ ràng**
 
+- **Trạng thái:** Hoàn thành (2026-10-23).
 - **Mục tiêu:** Chuẩn bị một tập dữ liệu nhỏ nhưng đủ đa dạng để thấy rõ sort, filter, pagination và chọn hàng.
-- **File dự kiến:** `src/data/sample-data.ts`, `src/types/record.ts`.
+- **File dự kiến:** `src/data/sample-data.ts`.
 - **Phụ thuộc:** Task 0.1.
 - **Hoàn thành khi:** Dữ liệu có đủ hàng để qua nhiều trang; các cột có kiểu và giá trị rỗng/khác nhau được kiểm soát; không phụ thuộc dịch vụ ngoài.
-- **Cách kiểm tra:** Typecheck; rà soát dữ liệu để xác nhận ví dụ sort, filter và pagination có thể quan sát được.
+- **Cách kiểm tra và kết quả:** `npm run typecheck` và `npm run build` thành công; rà soát 12 hồ sơ với nhiều phòng ban, văn phòng, loại hợp đồng, trạng thái và giá trị số để có thể thử lọc, sắp xếp và phân trang.
 
 ### M1 — Contract và cấu trúc bảng ngữ nghĩa
 
@@ -40,11 +41,13 @@ Các đường dẫn trong mục “File dự kiến” cho task sau là mục t
 
 **Task 1.2 — Render bảng tĩnh bằng HTML table thật**
 
+- **Trạng thái:** Hoàn thành (2026-10-23).
 - **Mục tiêu:** Hiển thị hàng/cột từ props trước khi thêm tương tác.
-- **File dự kiến:** `src/components/data-grid/DataGrid.tsx`, `src/components/data-grid/index.ts`.
+- **File dự kiến:** `src/components/data-grid/DataGrid.tsx`, `src/components/data-grid/DataGrid.css`, `src/data/sample-data.ts`, `src/App.tsx`, `src/App.css`.
 - **Phụ thuộc:** Task 1.1.
-- **Hoàn thành khi:** Dùng `<table>`, `<thead>`, `<tbody>`, `<th scope="col">`; header action dùng `<button>` thật; có nhãn truy cập được từ `ariaLabel`; không giả bảng bằng div; không mất ý nghĩa hàng/cột khi đọc bằng screen reader.
-- **Cách kiểm tra:** Rà soát DOM trong browser; kiểm tra accessibility tree và đọc bảng bằng screen reader; chạy typecheck/build.
+- **Hoàn thành khi:** Component nhận `data`, `columns`, `ariaLabel`; dùng `<table>`, `<thead>`, `<tbody>`, `<tr>`, `<th scope="col">`, `<td>` thật; áp dụng `role="grid"`, `role="row"`, `role="gridcell"` và `columnheader` phù hợp; hiển thị trạng thái khi `data` rỗng; chưa có thao tác sort/filter/page/selection/keyboard.
+- **Ghi chú semantics:** `th scope="col"` (role `columnheader`) xác định tiêu đề cột; `td` (role `gridcell`) được công bố là ô dữ liệu của grid. Các thẻ table native vẫn giữ trong DOM. Theo WAI-ARIA APG, grid là widget điều hướng bàn phím; phần điều hướng được để lại Task 3.2 theo phạm vi yêu cầu.
+- **Cách kiểm tra và kết quả:** `npm run typecheck` và `npm run build` thành công; rà soát mã xác nhận đủ tag/role yêu cầu và nhánh dữ liệu rỗng. Kiểm tra accessibility tree/screen reader thủ công để ở Task 4.2.
 
 ### M2 — Sorting, filtering và pagination
 
@@ -131,4 +134,4 @@ Các đường dẫn trong mục “File dự kiến” cho task sau là mục t
 - Thực hiện task theo thứ tự phụ thuộc; mỗi lần chỉ thay đổi phạm vi của task đang làm.
 - Kết thúc mỗi task bằng các bước kiểm tra ghi trong task đó và ghi nhận kết quả trước khi bắt đầu task phụ thuộc.
 - Mốc Lighthouse 100/100 là điều kiện bàn giao, không được suy ra từ build thành công hoặc chỉ từ điểm axe/accessibility tự động.
-- Task 0.1 đã được kiểm tra riêng; chưa triển khai DataGrid hoặc commit.
+- Các thay đổi được kiểm tra trước khi commit; commit được giới hạn theo phạm vi đã ủy quyền.

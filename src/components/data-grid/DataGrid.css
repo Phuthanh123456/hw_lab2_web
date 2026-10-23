@@ -1,0 +1,51 @@
+.data-grid__viewport {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid #c7d6cf;
+  border-radius: 0.85rem;
+  background: #fff;
+  box-shadow: 0 1rem 2.5rem rgb(24 55 43 / 7%);
+}
+
+.data-grid {
+  width: 100%;
+  min-width: 58rem;
+  border-collapse: collapse;
+  color: #15211e;
+  text-align: left;
+}
+
+.data-grid__heading,
+.data-grid__cell,
+.data-grid__empty {
+  padding: 0.9rem 1rem;
+  border-bottom: 1px solid #d6dfdb;
+}
+
+.data-grid__heading {
+  background: #eaf1ed;
+  color: #183b31;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.025em;
+  white-space: nowrap;
+}
+
+.data-grid__cell {
+  color: #263530;
+  font-size: 0.95rem;
+}
+
+.data-grid tbody tr:last-child .data-grid__cell,
+.data-grid tbody tr:last-child .data-grid__empty {
+  border-bottom: 0;
+}
+
+.data-grid tbody tr:nth-child(even) {
+  background: #f7faf8;
+}
+
+.data-grid__empty {
+  color: #394642;
+  text-align: center;
+}
