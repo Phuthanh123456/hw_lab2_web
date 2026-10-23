@@ -125,11 +125,20 @@ Do folder trống nên chưa có framework cần giữ. Đề cần một demo c
 
 ### M11 — Tích hợp, kiểm thử cạnh tranh và bàn giao
 - Mục tiêu: Xác minh luồng sale đầu-cuối, invariants, kiểm thử, scripts và lịch sử commit.
-- File dự kiến: test/integration/*, README.md, TASK_DECOMPOSITION.md, docs/verification.md; cập nhật code chỉ nếu lỗi được tái hiện.
+- File dự kiến: src/integration/__tests__/*, README.md, TASK_DECOMPOSITION.md, docs/verification.md; cập nhật code chỉ nếu lỗi được tái hiện.
 - Phụ thuộc: M0–M10.
 - Hoàn thành khi: Typecheck, toàn bộ test và production build đạt; luồng countdown → reserve → expire/checkout không oversell; ít nhất 8 commit triển khai riêng theo Conventional Commits; WBS ghi đúng kết quả và phần chưa xác minh.
 - Kiểm tra: npm run typecheck; npm test -- --run; npm run build; test integration có fake clock và concurrent buyers; kiểm tra git log, git status và rà soát file chuẩn bị commit. Không push trong các bước milestone.
 - Commit dự kiến: test: verify flash-sale concurrency end to end
+
+#### M11.1 — Kiểm thử tích hợp countdown, reserve, expiry và checkout
+- Mục tiêu: Xác minh các invariant tồn kho và cuộc đua checkout/expiry cùng scheduler countdown bằng test tích hợp với clock/frame giả lập.
+- File: src/integration/__tests__/flash-sale-lifecycle.test.ts, TASK_DECOMPOSITION.md.
+- Phụ thuộc: M2.2, M4, M5, M6.
+- Tiêu chí hoàn thành: Nhiều reserve đồng thời không vượt tồn; tồn kho không âm; expiry hoàn kho đúng một lần; checkout thắng trước deadline không bị expire hoàn kho, còn expiry tại deadline chặn checkout; frame trễ tính theo đồng hồ hiện tại; stop hủy RAF và callback đã dừng không phát sinh thêm.
+- Cách kiểm tra/kết quả thực tế: npm run typecheck đạt; npm test -- --run đạt (7 test files, 48 tests); npm run build đạt (Vite production build); git diff --check đạt. Các test mới: 5 test tích hợp.
+- Trạng thái: Hoàn thành (2026-10-23), không phát hiện lỗi cần sửa trong code sản phẩm.
+- Commit: test(inventory): verify concurrent reservations and expiry races.
 
 ## Kế hoạch commit
 
