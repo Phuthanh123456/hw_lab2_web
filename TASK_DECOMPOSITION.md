@@ -82,12 +82,13 @@ Do folder trống nên chưa có framework cần giữ. Đề cần một demo c
 - Commit thực hiện: feat(inventory): reserve stock atomically and expire locks
 
 ### M6 — Checkout và chống xử lý lặp
-- Mục tiêu: Hoàn tất checkout từ lock còn hiệu lực, chuyển lượng giữ thành lượng đã bán và chống checkout lặp.
-- File dự kiến: src/checkout/checkout-service.ts, src/checkout/__tests__/checkout-service.test.ts, cập nhật domain nếu cần.
+- Mục tiêu: Checkout reservation active còn hạn, với kiểm tra deadline và chuyển trạng thái trong cùng thao tác đồng bộ.
+- File dự kiến/đã tạo: src/inventory/inventory-coordinator.ts, src/inventory/__tests__/checkout.test.ts.
 - Phụ thuộc: M3, M4, M5.
-- Hoàn thành khi: Checkout chỉ thành công từ lock hợp lệ chưa hết hạn; cùng reservation không thể bị trừ kho hai lần; lỗi checkout giữ invariant và trạng thái nhất quán.
-- Kiểm tra: Checkout thành công, lock hết hạn, lock sai buyer, gọi lặp/idempotency key, hai checkout tranh cùng lock và stock conservation.
-- Commit dự kiến: feat: add idempotent flash-sale checkout
+- Hoàn thành khi: Chỉ trạng thái active và now < expiresAt checkout được; đúng mốc expiresAt coi là hết hạn; checkout/expiry là thao tác đồng bộ không có await; checkout lặp bị từ chối; checkout thành công không bị expiry sweep hoàn kho.
+- Kiểm tra/kết quả thực tế: npm run typecheck đạt; npm test -- --run đạt (6 test files, 36 tests), gồm checkout trước hạn, tại mốc hết hạn, sau expiry sweep, checkout lặp và hai thứ tự checkout/expire bằng fake clock. Stock giữ nguyên sau checkout thành công và chỉ được hoàn khi expiry thắng.
+- Trạng thái: Hoàn thành (2026-10-23).
+- Commit thực hiện: feat(checkout): commit only active reservations
 
 ### M7 — Dữ liệu demo Mega-Sale Việt Nam
 - Mục tiêu: Chuẩn bị kịch bản 11.11 hoặc Midnight Flash Sale có sản phẩm, tồn kho, giá VND và thời điểm mở bán cấu hình được.
@@ -131,4 +132,4 @@ Do folder trống nên chưa có framework cần giữ. Đề cần một demo c
 
 ## Kế hoạch commit
 
-M0–M11 hiện dự kiến gồm 12 commit: M2 được tách thành hai commit (core và scheduler), còn M4/M5 được hoàn tất cùng một commit theo phạm vi được yêu cầu rõ ràng. M0, M2.1, M2.2, M3, M4 và M5 đã hoàn thành bằng các commit ghi tại từng milestone. M1 và M6–M11 còn chờ yêu cầu và kiểm tra từng milestone. Các phần còn lại sẽ tiếp tục theo từng milestone. Hiện chưa cấu hình remote và chưa push.
+M0–M11 hiện dự kiến gồm 13 commit: M2 được tách thành hai commit (core và scheduler), còn M4/M5 được hoàn tất cùng một commit theo phạm vi được yêu cầu rõ ràng. M0, M2.1, M2.2, M3, M4, M5 và M6 đã hoàn thành bằng các commit ghi tại từng milestone. M1 và M7–M11 còn chờ yêu cầu và kiểm tra từng milestone. Các phần còn lại sẽ tiếp tục theo từng milestone. Hiện chưa cấu hình remote và chưa push.

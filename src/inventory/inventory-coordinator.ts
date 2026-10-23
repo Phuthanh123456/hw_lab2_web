@@ -22,6 +22,13 @@ export type ReserveResult =
       reason: 'invalid-quantity' | 'product-not-found' | 'out-of-stock'
     }
 
+export type CheckoutResult =
+  | { ok: true; reservation: Reservation }
+  | {
+      ok: false
+      reason: 'reservation-not-found' | 'reservation-expired' | 'already-checked-out'
+    }
+
 const browserNow = () => Date.now()
 
 function createRandomReservationId(): string {
@@ -118,6 +125,36 @@ export class InventoryCoordinator {
     this.availableStock.set(productId, available - quantity)
     this.reservations.set(reservationId, reservation)
     return { ok: true, reservation }
+  }
+
+  /**
+   * Synchronously commits checkout only while the reservation is active and
+   * now is strictly before expiresAt. At the exact deadline expiry wins.
+   */
+  checkout(reservationId: string): CheckoutResult {
+    const nowMs = this.now()
+    this.assertValidTime(nowMs)
+
+    const reservation = this.reservations.get(reservationId)
+    if (!reservation) return { ok: false, reason: 'reservation-not-found' }
+    if (reservation.status === 'expired') {
+      return { ok: false, reason: 'reservation-expired' }
+    }
+    if (reservation.status === 'checked-out') {
+      return { ok: false, reason: 'already-checked-out' }
+    }
+
+    if (nowMs >= reservation.expiresAt) {
+      this.expireDueReservationsAt(nowMs)
+      return { ok: false, reason: 'reservation-expired' }
+    }
+
+    const transition = transitionReservation(reservation, { type: 'checkout' }, nowMs)
+    if (!transition.accepted) return { ok: false, reason: 'reservation-expired' }
+
+    const checkedOut = Object.freeze(transition.reservation)
+    this.reservations.set(reservationId, checkedOut)
+    return { ok: true, reservation: checkedOut }
   }
 
   /** Expires all due reservations and restores each reservation's stock once. */
