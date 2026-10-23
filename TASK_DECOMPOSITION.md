@@ -90,11 +90,12 @@ Các đường dẫn trong mục “File dự kiến” cho task sau là mục t
 
 **Task 3.2 — Điều hướng ô bằng phím mũi tên**
 
-- **Mục tiêu:** Di chuyển focus giữa các ô bằng Arrow Up/Down/Left/Right.
-- **File dự kiến:** `src/components/data-grid/DataGrid.tsx`, `src/components/data-grid/data-grid-keyboard.ts`.
-- **Phụ thuộc:** Task 2.3 và 3.1.
-- **Hoàn thành khi:** Mỗi phím mũi tên chuyển focus đúng ô; biên bảng không làm focus biến mất; focus hoạt động với pagination/filter; semantics `role="grid"`, `role="row"`, `role="gridcell"` được áp dụng trên cấu trúc table thật tại vị trí phù hợp, đồng thời header giữ semantics cột.
-- **Cách kiểm tra:** Chỉ dùng bàn phím để đi qua các ô ở biên hàng/trang; rà accessibility tree và thử với screen reader; xác nhận không tạo div thay thế table; typecheck/build.
+- **Trạng thái:** Hoàn thành (2026-10-23).
+- **Mục tiêu:** Dùng roving `tabIndex` để di chuyển focus trong các ô đang hiển thị bằng Arrow Up/Down/Left/Right.
+- **File dự kiến:** `src/components/data-grid/DataGrid.tsx`, `src/components/data-grid/DataGrid.css`, `src/components/data-grid/data-grid-keyboard.ts`.
+- **Phụ thuộc:** Task 2.3. Row selection và Enter/Space vẫn thuộc Task 3.1, không nằm trong bước này.
+- **Hoàn thành khi:** Tại mỗi thời điểm chỉ một gridcell đang hiển thị có `tabIndex=0`; bốn phím mũi tên di chuyển trong ranh giới các hàng/cột của trang hiện tại; khi filter/sort/page thay đổi, tọa độ được clamp và focus được khôi phục nếu trước đó ở trong ô grid; input tìm kiếm không nhận handler mũi tên của grid; focus hiển thị rõ.
+- **Cách kiểm tra và kết quả:** Harness Node kiểm tra bốn hướng, chặn ở biên, clamp tọa độ vào số hàng/cột mới và trường hợp grid rỗng đều đạt; `npm run typecheck` và `npm run build` thành công. Rà mã xác nhận handler chỉ gắn trên gridcell (input tìm kiếm không bị chặn mũi tên), focus khôi phục sau thay đổi page rows nếu trước đó nằm trong ô, và chỉ render/điều hướng ô của trang hiện tại. Kiểm tra browser/accessibility tree và screen reader để ở Task 4.2. Enter/Space chưa được triển khai.
 
 ### M4 — Hoàn thiện giao diện và WCAG 2.2 AA
 

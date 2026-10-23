@@ -1,5 +1,11 @@
-import { useEffect, useId, useMemo, useState } from 'react'
+import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import type { DataGridProps } from './data-grid-contract'
+import {
+  clampGridCellPosition,
+  moveGridCellPosition,
+  type GridArrowKey,
+  type GridCellPosition,
+} from './data-grid-keyboard'
 import {
   filterRows,
   getNextSortState,
@@ -23,6 +29,9 @@ export function DataGrid<T>({ data, columns, ariaLabel }: DataGridProps<T>) {
   const searchInputId = useId()
   const [searchQuery, setSearchQuery] = useState('')
   const [sortState, setSortState] = useState<SortState<T> | null>(null)
+  const [activeCell, setActiveCell] = useState<GridCellPosition>({ rowIndex: 0, columnIndex: 0 })
+  const tableRef = useRef<HTMLTableElement>(null)
+  const focusWithinGridRef = useRef(false)
   const filteredData = useMemo(
     () => filterRows(data, columns.map((column) => column.accessorKey), searchQuery),
     [columns, data, searchQuery],
@@ -40,10 +49,62 @@ export function DataGrid<T>({ data, columns, ariaLabel }: DataGridProps<T>) {
     [pageIndex, sortedData],
   )
   const hasSearchQuery = searchQuery.trim() !== ''
+  const rovingCell = clampGridCellPosition(activeCell, page.rows.length, columns.length)
 
   useEffect(() => {
     setPageIndex(page.pageIndex)
   }, [page.pageIndex])
+
+  useLayoutEffect(() => {
+    const validCell = clampGridCellPosition(activeCell, page.rows.length, columns.length)
+    setActiveCell((current) =>
+      current.rowIndex === validCell.rowIndex && current.columnIndex === validCell.columnIndex
+        ? current
+        : validCell,
+    )
+
+    if (!focusWithinGridRef.current || page.rows.length === 0 || columns.length === 0) {
+      return
+    }
+
+    focusGridCell(validCell)
+  }, [page.rows, columns.length])
+
+  function focusGridCell(position: GridCellPosition): void {
+    const cell = tableRef.current?.querySelector<HTMLTableCellElement>(
+      `[data-grid-row-index="${position.rowIndex}"][data-grid-column-index="${position.columnIndex}"]`,
+    )
+    cell?.focus()
+  }
+
+  function handleGridCellKeyDown(
+    event: React.KeyboardEvent<HTMLTableCellElement>,
+    position: GridCellPosition,
+  ): void {
+    if (!isGridArrowKey(event.key)) {
+      return
+    }
+
+    event.preventDefault()
+    const nextPosition = moveGridCellPosition(
+      position,
+      event.key,
+      page.rows.length,
+      columns.length,
+    )
+    setActiveCell(nextPosition)
+    focusGridCell(nextPosition)
+  }
+
+  function handleGridCellBlur(): void {
+    queueMicrotask(() => {
+      const activeElement = document.activeElement
+      const activeGridCell = activeElement?.matches('[role="gridcell"]') ?? false
+      focusWithinGridRef.current = Boolean(
+        activeGridCell && tableRef.current?.contains(activeElement),
+      )
+    })
+  }
 
   return (
     <div className="data-grid__container">
@@ -64,7 +125,7 @@ export function DataGrid<T>({ data, columns, ariaLabel }: DataGridProps<T>) {
       </div>
 
       <div className="data-grid__viewport">
-        <table className="data-grid" role="grid" aria-label={ariaLabel}>
+        <table ref={tableRef} className="data-grid" role="grid" aria-label={ariaLabel}>
           <thead role="rowgroup">
             <tr role="row">
               {columns.map((column, columnIndex) => (
@@ -119,7 +180,27 @@ export function DataGrid<T>({ data, columns, ariaLabel }: DataGridProps<T>) {
               page.rows.map((item, rowIndex) => (
                 <tr key={rowIndex} role="row">
                   {columns.map((column, columnIndex) => (
-                    <td key={columnIndex} role="gridcell" className="data-grid__cell">
+                    <td
+                      key={columnIndex}
+                      role="gridcell"
+                      className="data-grid__cell"
+                      data-grid-row-index={rowIndex}
+                      data-grid-column-index={columnIndex}
+                      tabIndex={
+                        rovingCell.rowIndex === rowIndex &&
+                        rovingCell.columnIndex === columnIndex
+                          ? 0
+                          : -1
+                      }
+                      onFocus={() => {
+                        focusWithinGridRef.current = true
+                        setActiveCell({ rowIndex, columnIndex })
+                      }}
+                      onBlur={handleGridCellBlur}
+                      onKeyDown={(event) =>
+                        handleGridCellKeyDown(event, { rowIndex, columnIndex })
+                      }
+                    >
                       {formatCellValue(item[column.accessorKey])}
                     </td>
                   ))}
@@ -174,6 +255,15 @@ function getSortIndicator<T>(
   }
 
   return sortState.direction === 'ascending' ? '↑' : '↓'
+}
+
+function isGridArrowKey(key: string): key is GridArrowKey {
+  return (
+    key === 'ArrowUp' ||
+    key === 'ArrowDown' ||
+    key === 'ArrowLeft' ||
+    key === 'ArrowRight'
+  )
 }
 
 function getSortButtonLabel<T>(

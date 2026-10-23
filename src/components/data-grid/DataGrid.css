@@ -157,6 +157,13 @@
   font-size: 0.95rem;
 }
 
+.data-grid__cell:focus-visible {
+  position: relative;
+  z-index: 1;
+  outline: 3px solid #145c47;
+  outline-offset: -3px;
+}
+
 .data-grid tbody tr:last-child .data-grid__cell,
 .data-grid tbody tr:last-child .data-grid__empty {
   border-bottom: 0;
