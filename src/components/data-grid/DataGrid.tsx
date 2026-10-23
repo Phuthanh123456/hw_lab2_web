@@ -1,7 +1,15 @@
-import { useId, useMemo, useState } from 'react'
+import { useEffect, useId, useMemo, useState } from 'react'
 import type { DataGridProps } from './data-grid-contract'
-import { filterRows, getNextSortState, sortRows, type SortState } from './data-grid-utils'
+import {
+  filterRows,
+  getNextSortState,
+  paginateRows,
+  sortRows,
+  type SortState,
+} from './data-grid-utils'
 import './DataGrid.css'
+
+const PAGE_SIZE = 5
 
 function formatCellValue(value: unknown): string {
   if (value === null || value === undefined || value === '') {
@@ -26,7 +34,16 @@ export function DataGrid<T>({ data, columns, ariaLabel }: DataGridProps<T>) {
 
     return sortRows(filteredData, sortState.accessorKey, sortState.direction)
   }, [filteredData, sortState])
+  const [pageIndex, setPageIndex] = useState(0)
+  const page = useMemo(
+    () => paginateRows(sortedData, pageIndex, PAGE_SIZE),
+    [pageIndex, sortedData],
+  )
   const hasSearchQuery = searchQuery.trim() !== ''
+
+  useEffect(() => {
+    setPageIndex(page.pageIndex)
+  }, [page.pageIndex])
 
   return (
     <div className="data-grid__container">
@@ -99,7 +116,7 @@ export function DataGrid<T>({ data, columns, ariaLabel }: DataGridProps<T>) {
                 </td>
               </tr>
             ) : (
-              sortedData.map((item, rowIndex) => (
+              page.rows.map((item, rowIndex) => (
                 <tr key={rowIndex} role="row">
                   {columns.map((column, columnIndex) => (
                     <td key={columnIndex} role="gridcell" className="data-grid__cell">
@@ -112,6 +129,38 @@ export function DataGrid<T>({ data, columns, ariaLabel }: DataGridProps<T>) {
           </tbody>
         </table>
       </div>
+
+      <nav className="data-grid__pagination" aria-label="Điều hướng trang dữ liệu">
+        <p className="data-grid__page-summary" role="status" aria-live="polite">
+          {page.pageCount === 0
+            ? 'Không có trang · 0 dòng'
+            : `Trang ${page.pageIndex + 1} / ${page.pageCount} · Dòng ${page.startRow}–${page.endRow} / ${sortedData.length}`}
+        </p>
+        <div className="data-grid__page-controls">
+          <button
+            type="button"
+            className="data-grid__page-button"
+            aria-label="Trang trước"
+            disabled={page.pageCount === 0 || page.pageIndex === 0}
+            onClick={() => setPageIndex((current) => Math.max(current - 1, 0))}
+          >
+            Trang trước
+          </button>
+          <button
+            type="button"
+            className="data-grid__page-button"
+            aria-label="Trang tiếp theo"
+            disabled={page.pageCount === 0 || page.pageIndex === page.pageCount - 1}
+            onClick={() =>
+              setPageIndex((current) =>
+                Math.min(current + 1, Math.max(page.pageCount - 1, 0)),
+              )
+            }
+          >
+            Trang tiếp theo
+          </button>
+        </div>
+      </nav>
     </div>
   )
 }

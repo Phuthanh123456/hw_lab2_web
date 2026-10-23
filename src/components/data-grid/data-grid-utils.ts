@@ -54,6 +54,34 @@ export function filterRows<T>(
   )
 }
 
+export interface PaginatedRows<T> {
+  rows: T[]
+  pageCount: number
+  pageIndex: number
+  startRow: number
+  endRow: number
+}
+
+export function paginateRows<T>(
+  data: readonly T[],
+  requestedPageIndex: number,
+  pageSize: number,
+): PaginatedRows<T> {
+  const pageCount = Math.ceil(data.length / pageSize)
+  const pageIndex =
+    pageCount === 0 ? 0 : Math.min(Math.max(requestedPageIndex, 0), pageCount - 1)
+  const startIndex = pageIndex * pageSize
+  const rows = data.slice(startIndex, startIndex + pageSize)
+
+  return {
+    rows,
+    pageCount,
+    pageIndex,
+    startRow: rows.length === 0 ? 0 : startIndex + 1,
+    endRow: startIndex + rows.length,
+  }
+}
+
 function compareValues(left: unknown, right: unknown): number {
   if (left === right) {
     return 0

@@ -71,11 +71,12 @@ Các đường dẫn trong mục “File dự kiến” cho task sau là mục t
 
 **Task 2.3 — Pagination**
 
-- **Mục tiêu:** Chia kết quả thành trang và điều hướng được bằng bàn phím.
-- **File dự kiến:** `src/components/data-grid/DataGrid.tsx`.
+- **Trạng thái:** Hoàn thành (2026-10-23).
+- **Mục tiêu:** Chia kết quả đã lọc và sắp xếp thành các trang; điều hướng bằng button native có nhãn rõ.
+- **File dự kiến:** `src/components/data-grid/DataGrid.tsx`, `src/components/data-grid/DataGrid.css`, `src/components/data-grid/data-grid-utils.ts`.
 - **Phụ thuộc:** Task 2.1 và 2.2.
-- **Hoàn thành khi:** Có điều hướng trang trước/sau và thông tin trang hiện tại; nút ở biên được disable đúng; thay đổi filter/sort không để trang hiện tại trỏ ngoài phạm vi; chỉ render hàng của trang hiện tại.
-- **Cách kiểm tra:** Thử trang đầu/cuối, trang chỉ có một phần dữ liệu, đổi filter ở trang cuối; kiểm tra nhãn và trạng thái nút bằng keyboard/screen reader; typecheck/build.
+- **Hoàn thành khi:** Pipeline là filter → sort → paginate; hiển thị trang hiện tại/tổng trang và phạm vi hàng; Previous/Next có label và disable ở biên; giảm page count không để page index ngoài phạm vi; dữ liệu rỗng không hiện số trang 0; đổi trang giữ filter/sort; chỉ render hàng của trang hiện tại.
+- **Cách kiểm tra:** Thử trang đầu/cuối, trang cuối không đầy, lọc từ trang cuối làm giảm tổng số trang, dữ liệu ít hơn một trang và không có kết quả; xác nhận filter/sort còn nguyên khi chuyển trang; typecheck/build. Không thêm điều hướng mũi tên ở task này.
 
 ### M3 — Chọn hàng và điều hướng bàn phím
 
