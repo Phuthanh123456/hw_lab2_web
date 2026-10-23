@@ -33,13 +33,24 @@ Do folder trống nên chưa có framework cần giữ. Đề cần một demo c
 - Commit dự kiến: feat: define flash-sale domain contracts
 
 ### M2 — Countdown chống trôi
-- Mục tiêu: Tính remainingMs = max(0, targetTime - Date.now()) ở mỗi lần cập nhật; không giảm số đếm theo từng interval.
-- File dự kiến: src/timer/anti-drift-countdown.ts, src/timer/__tests__/anti-drift-countdown.test.ts.
-- Phụ thuộc: M0, M1.
-- Hoàn thành khi: Có start/stop/dispose, cập nhật đến 0 đúng một lần, tính lại từ thời điểm đích sau tab throttle hoặc callback trễ; không để animation frame/listener tồn tại sau dispose.
-- Kiểm tra: Fake clock và fake requestAnimationFrame cho target trong tương lai, callback trễ, nhảy clock, hết giờ, start/stop lặp; xác nhận giá trị luôn lấy từ chênh lệch Date.now với target.
-- Commit dự kiến: feat: add drift-resistant sale countdown
 
+#### M2.1 — Core tính toán thuần
+- Mục tiêu: Tính remainingMs từ deadline tuyệt đối; không phụ thuộc UI hoặc scheduler.
+- File dự kiến/đã tạo: src/timer/countdown-math.ts, src/timer/__tests__/countdown-math.test.ts.
+- Phụ thuộc: M0; core dùng nowMs truyền vào nên không cần contract M1.
+- Hoàn thành khi: remainingMs = Math.max(0, targetTimeMs - nowMs); deadline/now phải hữu hạn; duration phải hữu hạn và không âm; duration 0 được phép.
+- Kiểm tra và kết quả thực tế: npm run typecheck đạt; npm test -- --run đạt (2 test files, 10 tests), gồm thời gian bình thường, đúng hạn, quá hạn và input không hợp lệ.
+- Trạng thái: Hoàn thành (2026-10-23).
+- Commit thực hiện: feat(timer): add date-based countdown core
+
+#### M2.2 — Scheduler bằng requestAnimationFrame
+- Mục tiêu: Tạo deadline một lần từ Date.now() + durationMs; mỗi frame đọc lại Date.now() và tính remaining từ deadline cố định.
+- File dự kiến: src/timer/countdown-scheduler.ts, src/timer/__tests__/countdown-scheduler.test.ts.
+- Phụ thuộc: M2.1.
+- Hoàn thành khi: Có tối đa một frame đang chờ; stop/cancel idempotent và không phát callback tiếp; hết hạn phát 0 và kết thúc đúng một lần; không dùng setInterval hoặc tích lũy delta frame.
+- Kiểm tra: Inject fake clock/RAF; kiểm tra frame trễ, duration 0, frame kết thúc, hủy trước frame và không gọi callback sau hủy.
+- Trạng thái: Chưa thực hiện.
+- Commit dự kiến: feat(timer): schedule countdown with animation frames
 ### M3 — Mô hình Inventory Lock FSM thuần
 - Mục tiêu: Định nghĩa state và transition tường minh cho giữ hàng, hết hạn, giải phóng lock và checkout.
 - File dự kiến: src/inventory/inventory-machine.ts, src/inventory/__tests__/inventory-machine.test.ts.
@@ -114,4 +125,4 @@ Do folder trống nên chưa có framework cần giữ. Đề cần một demo c
 
 ## Kế hoạch commit
 
-M0–M11 được chia thành 12 commit riêng theo thứ tự phụ thuộc, dùng Conventional Commits; M0 đã hoàn thành bằng commit chore(hw3): prepare flash-sale engine scaffold. M1–M11 còn chờ yêu cầu triển khai và kiểm tra từng milestone. Không gộp nhiều milestone vào một commit. Hiện chưa cấu hình remote và chưa push.
+M0–M11 gồm 13 commit riêng theo thứ tự phụ thuộc, dùng Conventional Commits; M2 được tách thành hai commit (core và scheduler). M0 đã hoàn thành bằng chore(hw3): prepare flash-sale engine scaffold và M2.1 bằng feat(timer): add date-based countdown core. M1, M2.2 và M3–M11 còn chờ yêu cầu và kiểm tra từng milestone. Không gộp milestone. Hiện chưa cấu hình remote và chưa push.
