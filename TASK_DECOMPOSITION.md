@@ -64,20 +64,22 @@ Do folder trống nên chưa có framework cần giữ. Đề cần một demo c
 - Commit thực hiện: feat(inventory): model reservation lock states
 
 ### M4 — Reservation coordinator và tính nguyên tử trong mô phỏng
-- Mục tiêu: Điều phối yêu cầu giữ hàng cạnh tranh, không cho phép bán/giữ vượt tồn kho.
-- File dự kiến: src/inventory/inventory-coordinator.ts, src/inventory/__tests__/inventory-coordinator.test.ts.
-- Phụ thuộc: M1, M3.
-- Hoàn thành khi: Thao tác thay đổi tồn kho đi qua một authority; cập nhật số lượng và lock là nguyên tử trong mô hình chạy; thứ tự xử lý yêu cầu đồng thời được xác định; số lượng không âm và không vượt stock.
-- Kiểm tra: Promise.all với nhiều buyer tranh số lượng cuối, lặp test để phát hiện oversell, kiểm tra stock conservation và kết quả từng yêu cầu. Ghi rõ đây là mô phỏng trong một runtime; không tuyên bố bảo đảm nhiều server/tab nếu chưa triển khai backend.
-- Commit dự kiến: feat: serialize concurrent stock reservations
+- Mục tiêu: Tạo reservation ID ổn định, kiểm tra/trừ tồn kho đồng bộ và điều phối yêu cầu reserve cạnh tranh trong một runtime.
+- File dự kiến/đã tạo: src/inventory/inventory-coordinator.ts, src/inventory/__tests__/inventory-coordinator.test.ts.
+- Phụ thuộc: M3; model reservation tự chứa, contract inventory rộng hơn tại M1 có thể được đồng bộ sau.
+- Hoàn thành khi: Kiểm tra stock và trừ hàng cùng một call stack không có await; stock không âm; có TTL expiresAt và clock/ID generator injectable; hết hạn trả hàng đúng một lần; phạm vi in-memory một runtime được ghi rõ.
+- Kiểm tra/kết quả thực tế: npm run typecheck đạt; npm test -- --run đạt (5 test files, 30 tests). Promise.all 40 reserve trên stock 7 cho đúng 7 thành công, 33 thất bại, stock còn 0; test ID/expiry, out-of-stock, product không tồn tại, quantity lỗi, fake clock, expiry trước/đúng hạn và reserve tiếp sau khi hết hạn.
+- Trạng thái: Hoàn thành (2026-10-23).
+- Commit thực hiện: feat(inventory): reserve stock atomically and expire locks
 
 ### M5 — Hết hạn lock và giải phóng đúng một lần
-- Mục tiêu: Quản lý TTL cho lock, hoàn trả tồn kho khi hết hạn và chống timer cũ tác động nhầm lock mới.
-- File dự kiến: src/inventory/inventory-coordinator.ts, src/inventory/__tests__/inventory-expiry.test.ts.
-- Phụ thuộc: M2, M3, M4.
-- Hoàn thành khi: Lock quá hạn không checkout được; lượng giữ được trả về một lần; hủy/dispose dọn callback/timer; thao tác lặp không cộng kho trùng.
-- Kiểm tra: Fake clock cho trước hạn/đúng hạn/quá hạn, lock gia hạn, release và expire lặp, cleanup.
-- Commit dự kiến: feat: expire inventory holds safely
+- Mục tiêu: Sweep reservation đến hạn bằng clock truyền vào, chuyển FSM sang expired và trả hàng chính xác một lần.
+- File dự kiến/đã tạo: src/inventory/inventory-coordinator.ts, src/inventory/__tests__/inventory-coordinator.test.ts.
+- Phụ thuộc: M3, M4. Không tạo timer nền ở milestone này; caller có thể gọi sweep và reserve tự sweep trước khi kiểm tra stock.
+- Hoàn thành khi: Trước deadline không expire; tại/quá deadline chuyển expired; sweep lặp không hoàn kho thêm; việc sweep dùng clock injectable, không chờ thời gian thật.
+- Kiểm tra/kết quả thực tế: Cùng bộ kiểm tra M4 đạt; fake clock xác nhận chưa hoàn hàng tại 599ms, hoàn hàng tại expiresAt 600ms, các lần sweep sau trả danh sách rỗng và stock giữ nguyên; reserve tiếp theo tự thu hồi reservation hết hạn trước khi xét tồn kho.
+- Trạng thái: Hoàn thành (2026-10-23), thực hiện cùng phạm vi service/expiry được yêu cầu.
+- Commit thực hiện: feat(inventory): reserve stock atomically and expire locks
 
 ### M6 — Checkout và chống xử lý lặp
 - Mục tiêu: Hoàn tất checkout từ lock còn hiệu lực, chuyển lượng giữ thành lượng đã bán và chống checkout lặp.
@@ -129,4 +131,4 @@ Do folder trống nên chưa có framework cần giữ. Đề cần một demo c
 
 ## Kế hoạch commit
 
-M0–M11 dự kiến gồm 13 commit riêng theo thứ tự phụ thuộc, dùng Conventional Commits; M2 được tách thành hai commit (core và scheduler). M0, M2.1, M2.2 và M3 đã hoàn thành bằng các commit ghi tại từng milestone. M1 và M4–M11 còn chờ yêu cầu và kiểm tra từng milestone. Không gộp milestone. Hiện chưa cấu hình remote và chưa push.
+M0–M11 hiện dự kiến gồm 12 commit: M2 được tách thành hai commit (core và scheduler), còn M4/M5 được hoàn tất cùng một commit theo phạm vi được yêu cầu rõ ràng. M0, M2.1, M2.2, M3, M4 và M5 đã hoàn thành bằng các commit ghi tại từng milestone. M1 và M6–M11 còn chờ yêu cầu và kiểm tra từng milestone. Các phần còn lại sẽ tiếp tục theo từng milestone. Hiện chưa cấu hình remote và chưa push.
