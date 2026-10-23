@@ -117,11 +117,12 @@ Do folder trống nên chưa có framework cần giữ. Đề cần một demo c
 
 ### M10 — AI Failure Audit có bằng chứng
 - Mục tiêu: Ghi ít nhất ba lỗi thực sự do AI tạo hoặc đề xuất và đã được xác minh, gồm bằng chứng, cách phát hiện, cách sửa và kiểm tra xác nhận.
-- File dự kiến: AI_FAILURE_AUDIT.md; liên kết tới test/log/commit liên quan nếu có.
+- File: AI_FAILURE_AUDIT.md; dẫn tới test, kết quả chạy và commit liên quan.
 - Phụ thuộc: M2–M9 và bằng chứng phát sinh trong quá trình làm.
 - Hoàn thành khi: Có ít nhất 3 mục riêng biệt; mỗi mục chỉ ra lỗi cụ thể, bằng chứng tái kiểm tra được, phương pháp phát hiện, bản sửa và kết quả test. Không tính giả thuyết, code chưa chạy hoặc lỗi được dựng giả.
-- Kiểm tra: Mỗi mục audit truy được tới diff/test/log và lặp lại được cách xác nhận; rà soát để không ghi lộ secret.
-- Commit dự kiến: docs: record verified AI implementation failures
+- Kiểm tra/kết quả thực tế: Ghi 3 mục đã kiểm chứng: test FSM dùng nhầm trạng thái active, kỳ vọng format countdown sai, và README lỗi thời sau khi thêm checkout. Chạy `npm test -- --run src/inventory/__tests__/reservation.test.ts` đạt (1 file, 9 tests), `npm test -- --run src/App.test.tsx` đạt (1 file, 8 tests); kiểm tra lịch sử `99d8b15` → `adce3ca` → `8fb8e70` xác nhận tài liệu stale được sửa. Không có test tự động cho README; đã ghi rõ kiểm tra tài liệu thủ công trong audit. Không thêm lỗi giả hay sửa code sản phẩm.
+- Trạng thái: Hoàn thành (2026-10-23), 3 lỗi có bằng chứng được ghi trong AI_FAILURE_AUDIT.md.
+- Commit: docs(audit): document verified AI failure modes
 
 ### M11 — Tích hợp, kiểm thử cạnh tranh và bàn giao
 - Mục tiêu: Xác minh luồng sale đầu-cuối, invariants, kiểm thử, scripts và lịch sử commit.
@@ -142,4 +143,4 @@ Do folder trống nên chưa có framework cần giữ. Đề cần một demo c
 
 ## Kế hoạch commit
 
-M0–M11 hiện dự kiến gồm 12 commit: M2 được tách thành hai commit (core và scheduler), còn M4/M5 được hoàn tất cùng một commit theo phạm vi được yêu cầu rõ ràng. M0, M2.1, M2.2, M3, M4, M5, M6 và M8 đã hoàn thành bằng các commit ghi tại từng milestone. M1, M7, M9, M10 và M11 còn chờ yêu cầu và kiểm tra từng milestone. Các phần còn lại sẽ tiếp tục theo từng milestone. Hiện chưa cấu hình remote và chưa push.
+M0–M11 dự kiến gồm 12 commit: M2 tách thành core và scheduler; M4/M5 dùng chung một commit theo phạm vi triển khai; M10 và M11.1 đã có commit riêng. Hiện có 9 commit Conventional Commits trên branch này, gồm 7 commit triển khai trước đó cùng `ed2895d` (M11.1) và commit audit M10. Đã vượt yêu cầu tối thiểu 8 commit riêng. M1, M7, M9 và phần bàn giao cuối của M11 vẫn còn chờ yêu cầu/kiểm tra. Hiện chưa cấu hình remote và chưa push.
